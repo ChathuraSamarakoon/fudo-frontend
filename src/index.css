@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+
+@theme {
+  --color-fudo-red: #c8161d; 
+  --color-fudo-bg: #f8f9fa; 
+  --color-fudo-text: #1f2937; 
+}
+
+
+@layer base {
+  body {
+    @apply bg-fudo-bg text-fudo-text antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-900;
+  }
+
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}

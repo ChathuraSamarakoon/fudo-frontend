@@ -1,8 +1,22 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Menu from './pages/Menu';
+
 function App() {
   return (
-    <h1 className="text-4xl font-extrabold text-center text-red-600 mt-8 mb-6 shadow-sm">
-       🍔 Fudo Restaurant Menu
-    </h1>
+    <Router>
+      
+      <Navbar />
+      
+      
+      <div className="min-h-screen">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/menu" element={<Menu />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
