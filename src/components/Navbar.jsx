@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Search, User, ShoppingCart } from 'lucide-react';
+import { FiSearch, FiUser, FiShoppingCart } from 'react-icons/fi';
 
 function Navbar() {
   return (
@@ -21,13 +21,13 @@ function Navbar() {
       
       <div className="flex items-center gap-6">
         <button className="text-gray-600 hover:text-fudo-red transition-colors">
-          <Search size={22} />
+          <FiSearch size={22} />
         </button>
         <button className="text-gray-600 hover:text-fudo-red transition-colors">
-          <User size={22} />
+          <FiUser size={22} />
         </button>
         <Link to="/cart" className="flex items-center gap-2 bg-fudo-red text-white px-5 py-2.5 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md">
-          <ShoppingCart size={18} />
+          <FiShoppingCart size={18} />
           <span>Cart</span>
         </Link>
       </div>
