@@ -5,8 +5,6 @@ import { useCart } from '../context/CartContext';
 
 function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('card');
-  
-  
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
   const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -62,10 +60,7 @@ function Checkout() {
                         </div>
                         <p className="text-xs text-gray-500 font-medium mt-1">{item.category}</p>
                         
-                        
                         <div className="flex items-center justify-between mt-3">
-                          
-                          
                           <div className="flex items-center gap-4 bg-gray-50 px-3 py-1 rounded-full border border-gray-200">
                             <button 
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -78,7 +73,6 @@ function Checkout() {
                             >+</button>
                           </div>
 
-                          
                           <button 
                             onClick={() => removeFromCart(item.id)}
                             className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-red-50"
@@ -86,7 +80,6 @@ function Checkout() {
                           >
                             <FaTrash size={14} />
                           </button>
-
                         </div>
                       </div>
                     </div>
@@ -97,7 +90,6 @@ function Checkout() {
             </div>
           </div>
 
-          
           <div className="lg:w-5/12 flex flex-col gap-6">
             
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative">
@@ -122,14 +114,7 @@ function Checkout() {
               <div className="flex flex-col gap-3">
                 <label className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${paymentMethod === 'card' ? 'border-fudo-red bg-red-50' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
                   <div className="flex items-center gap-3">
-                    <input 
-                      type="radio" 
-                      name="payment" 
-                      value="card" 
-                      checked={paymentMethod === 'card'} 
-                      onChange={() => setPaymentMethod('card')}
-                      className="w-4 h-4 accent-fudo-red"
-                    />
+                    <input type="radio" name="payment" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="w-4 h-4 accent-fudo-red" />
                     <div>
                       <p className="font-bold text-gray-900 text-sm">Credit Card</p>
                       <p className="text-xs text-gray-500 font-medium">**** 4242</p>
@@ -140,14 +125,7 @@ function Checkout() {
 
                 <label className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${paymentMethod === 'cash' ? 'border-fudo-red bg-red-50' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
                   <div className="flex items-center gap-3">
-                    <input 
-                      type="radio" 
-                      name="payment" 
-                      value="cash" 
-                      checked={paymentMethod === 'cash'} 
-                      onChange={() => setPaymentMethod('cash')}
-                      className="w-4 h-4 accent-fudo-red"
-                    />
+                    <input type="radio" name="payment" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="w-4 h-4 accent-fudo-red" />
                     <div>
                       <p className="font-bold text-gray-900 text-sm">Cash on Delivery</p>
                       <p className="text-xs text-gray-500 font-medium">Have exact change ready</p>
@@ -160,35 +138,19 @@ function Checkout() {
 
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-fudo-red border-t-4">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Summary</h2>
-              
               <div className="flex flex-col gap-3 mb-6 border-b border-gray-100 pb-6">
-                <div className="flex justify-between text-gray-600 text-sm font-medium">
-                  <span>Subtotal</span>
-                  <span>Rs. {subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600 text-sm font-medium">
-                  <span>Delivery Fee</span>
-                  <span>Rs. {deliveryFee.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-gray-600 text-sm font-medium">
-                  <span>Taxes & Fees</span>
-                  <span>Rs. {taxesAndFees.toFixed(2)}</span>
-                </div>
+                <div className="flex justify-between text-gray-600 text-sm font-medium"><span>Subtotal</span><span>Rs. {subtotal.toFixed(2)}</span></div>
+                <div className="flex justify-between text-gray-600 text-sm font-medium"><span>Delivery Fee</span><span>Rs. {deliveryFee.toFixed(2)}</span></div>
+                <div className="flex justify-between text-gray-600 text-sm font-medium"><span>Taxes & Fees</span><span>Rs. {taxesAndFees.toFixed(2)}</span></div>
               </div>
-
               <div className="flex justify-between items-center mb-8">
                 <span className="text-2xl font-extrabold text-gray-900">Total</span>
                 <span className="text-3xl font-extrabold text-gray-900">Rs. {finalTotal.toFixed(2)}</span>
               </div>
-
-              <button 
-                disabled={cartItems.length === 0} 
-                className="w-full bg-fudo-red text-white py-4 rounded-full font-bold text-lg hover:bg-red-700 transition-colors shadow-md flex justify-center items-center gap-2 disabled:bg-red-300 disabled:cursor-not-allowed"
-              >
+              <button disabled={cartItems.length === 0} className="w-full bg-fudo-red text-white py-4 rounded-full font-bold text-lg hover:bg-red-700 transition-colors shadow-md flex justify-center items-center gap-2 disabled:bg-red-300 disabled:cursor-not-allowed">
                 Place Order →
               </button>
             </div>
-
           </div>
         </div>
       </div>

@@ -4,14 +4,17 @@ const CartContext = createContext();
 
 export function CartProvider({ children }) {
   
+
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem('fudo_cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
+
   useEffect(() => {
     localStorage.setItem('fudo_cart', JSON.stringify(cartItems));
   }, [cartItems]);
+
 
   const addToCart = (product) => {
     setCartItems((prevItems) => {
@@ -25,10 +28,9 @@ export function CartProvider({ children }) {
     });
   };
 
-  
+
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return; 
-    
     setCartItems((prevItems) => 
       prevItems.map(item => 
         item.id === id ? { ...item, quantity: newQuantity } : item
@@ -36,14 +38,18 @@ export function CartProvider({ children }) {
     );
   };
 
-  
+ 
   const removeFromCart = (id) => {
     setCartItems((prevItems) => prevItems.filter(item => item.id !== id));
   };
 
-  
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateQuantity, removeFromCart }}>
+    <CartContext.Provider value={{ cartItems, addToCart, updateQuantity, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
