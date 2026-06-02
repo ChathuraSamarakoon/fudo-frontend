@@ -3,7 +3,8 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Menu from './pages/Menu';
-import Contact from './pages/Contact'; 
+import Contact from './pages/Contact';
+import Checkout from './pages/Checkout'; 
 
 function App() {
   return (
@@ -13,7 +14,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/contact" element={<Contact />} /> 
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/cart" element={<Checkout />} /> 
         </Routes>
       </div>
       <Footer />
