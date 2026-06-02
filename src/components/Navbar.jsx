@@ -1,10 +1,16 @@
 import { Link } from 'react-router-dom';
 import { FiSearch, FiUser, FiShoppingCart } from 'react-icons/fi';
 
+import { useCart } from '../context/CartContext'; 
+
 function Navbar() {
+  
+  const { cartItems } = useCart();
+  const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+
   return (
-   
     <nav className="flex items-center justify-between px-10 py-5 bg-white shadow-sm sticky top-0 z-50">
+      
       
       <Link to="/" className="text-3xl font-extrabold text-fudo-red tracking-tight">
         Fudo
@@ -26,9 +32,18 @@ function Navbar() {
         <button className="text-gray-600 hover:text-fudo-red transition-colors">
           <FiUser size={22} />
         </button>
-        <Link to="/cart" className="flex items-center gap-2 bg-fudo-red text-white px-5 py-2.5 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md">
+        
+        
+        <Link to="/cart" className="relative flex items-center gap-2 bg-fudo-red text-white px-5 py-2.5 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md">
           <FiShoppingCart size={18} />
           <span>Cart</span>
+          
+          
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-yellow-400 text-gray-900 text-xs font-extrabold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white">
+              {totalItems}
+            </span>
+          )}
         </Link>
       </div>
 

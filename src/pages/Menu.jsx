@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
 import productService from '../services/productService';
 import { FiShoppingCart } from 'react-icons/fi';
-import { FaStar } from 'react-icons/fa';
+import { FaStar, FaCheck } from 'react-icons/fa'; 
+import { useCart } from '../context/CartContext';
 
 function Menu() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
-  
   const [activeCategory, setActiveCategory] = useState('All');
-
   
+  
+  const [addedId, setAddedId] = useState(null); 
+  
+  const { addToCart } = useCart(); 
+
   const categories = ['All', 'Appetizers', 'Main Course', 'Desserts', 'Beverages', 'Burger'];
 
-  
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -35,9 +37,19 @@ function Menu() {
     fetchProducts();
   }, [activeCategory]); 
 
+  
+  const handleAddToCart = (product) => {
+    addToCart(product);     
+    setAddedId(product.id);  
+    
+    
+    setTimeout(() => {
+      setAddedId(null);
+    }, 1000);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-10 py-16">
-      
       
       <div className="mb-10 text-center md:text-left flex flex-col md:flex-row justify-between items-end gap-6">
         <div>
@@ -51,7 +63,6 @@ function Menu() {
             Discover a world of vibrant flavors, carefully crafted to satisfy your deepest cravings.
           </p>
         </div>
-        
         
         <div className="flex flex-wrap gap-3 justify-center md:justify-end">
           {categories.map((category) => (
@@ -70,7 +81,6 @@ function Menu() {
         </div>
       </div>
 
-      
       {loading ? (
         <div className="text-center text-xl font-bold text-gray-500 py-20 animate-pulse">
           Loading delicious food... 🍕
@@ -108,10 +118,30 @@ function Menu() {
                     <FaStar />
                     <span className="text-gray-700 ml-1">4.8 (120)</span>
                   </div>
-                  <button className="bg-fudo-red text-white px-5 py-2.5 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md flex items-center gap-2">
-                    <FiShoppingCart size={18} />
-                    <span>Add</span>
+                  
+                  
+                  <button 
+                    onClick={() => handleAddToCart(product)} 
+                    
+                    className={`px-5 py-2.5 rounded-full font-bold transition-all duration-300 shadow-md flex items-center gap-2 active:scale-95 ${
+                      addedId === product.id 
+                        ? 'bg-green-500 text-white hover:bg-green-600' 
+                        : 'bg-fudo-red text-white hover:bg-red-700'     
+                    }`}
+                  >
+                    {addedId === product.id ? (
+                      <>
+                        <FaCheck size={18} className="animate-bounce" />
+                        <span>Added!</span>
+                      </>
+                    ) : (
+                      <>
+                        <FiShoppingCart size={18} />
+                        <span>Add</span>
+                      </>
+                    )}
                   </button>
+                  
                 </div>
               </div>
             </div>
