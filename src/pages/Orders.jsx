@@ -12,8 +12,17 @@ function Orders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await orderService.getOrdersByUser(1); 
-        setOrders(data.reverse()); 
+        // 1. LocalStorage එකෙන් User ව ගන්නවා (Get logged-in user from LocalStorage)
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        
+        if (storedUser) {
+          // 2. ඒ User ගේ ID එක පාස් කරනවා (Pass that specific User's ID)
+          const data = await orderService.getOrdersByUser(storedUser.id); 
+          setOrders(data.reverse()); 
+        } else {
+          // User කෙනෙක් නැත්නම් Loading එක නවත්තනවා (Stop loading if no user)
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Failed to load orders", error);
       } finally {
@@ -55,6 +64,15 @@ function Orders() {
             <FaSpinner className="animate-spin text-4xl text-fudo-red mb-4" />
             <p className="text-gray-500 font-medium">Fetching your delicious orders...</p>
           </div>
+        ) : !localStorage.getItem('user') ? (
+          <div className="bg-white rounded-3xl shadow-sm p-16 text-center border border-gray-100 flex flex-col items-center">
+             <FaBoxOpen className="text-6xl text-gray-300 mb-6" />
+             <h2 className="text-2xl font-bold text-gray-900 mb-2">Please Login</h2>
+             <p className="text-gray-500 mb-8">You need to login to view your orders.</p>
+             <Link to="/login" className="bg-fudo-red text-white px-8 py-3 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md">
+               Login Now
+             </Link>
+          </div>
         ) : orders.length === 0 ? (
           <div className="bg-white rounded-3xl shadow-sm p-16 text-center border border-gray-100 flex flex-col items-center">
             <FaBoxOpen className="text-6xl text-gray-300 mb-6" />
@@ -84,7 +102,6 @@ function Orders() {
                     Payment Method: <span className="font-bold text-gray-900 uppercase">{order.paymentMethod}</span>
                   </div>
                   
-                  
                   <button 
                     onClick={() => setSelectedOrder(order)} 
                     className="text-fudo-red font-bold text-sm hover:underline"
@@ -98,7 +115,6 @@ function Orders() {
         )}
       </div>
 
-      
       {selectedOrder && (
         <OrderDetailsModal 
           order={selectedOrder} 

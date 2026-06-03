@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaArrowLeft, FaLock, FaReceipt, FaMapMarkerAlt, FaCreditCard, FaMoneyBillWave, FaTrash } from 'react-icons/fa';
 import { useCart } from '../context/CartContext'; 
-import orderService from '../services/orderService'; // Make sure this service is created
+import orderService from '../services/orderService'; 
 
 function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -19,13 +19,23 @@ function Checkout() {
   const handlePlaceOrder = async () => {
     setIsSubmitting(true);
 
+    // 1. LocalStorage එකෙන් User ව ගන්නවා (Get logged-in user from LocalStorage)
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
+    // 2. ලොග් වෙලා නැත්නම් Login එකට යවනවා (If not logged in, redirect to login)
+    if (!storedUser) {
+      alert("Please login to place an order!");
+      navigate('/login');
+      setIsSubmitting(false);
+      return;
+    }
     
     const orderData = {
       order: {
         totalPrice: finalTotal,
         paymentMethod: paymentMethod,
         status: "PENDING",
-        user: { id: 1 } 
+        user: { id: storedUser.id } // <-- මෙතනට දැන් ඇත්ත User ID එක එනවා (Real User ID is passed here)
       },
       orderItems: cartItems.map(item => ({
         product: { id: item.id },
@@ -67,7 +77,6 @@ function Checkout() {
         <h1 className="text-4xl font-extrabold text-gray-900 mb-8">Checkout</h1>
 
         <div className="flex flex-col lg:flex-row gap-10">
-          
           
           <div className="lg:w-7/12">
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -125,13 +134,10 @@ function Checkout() {
                   ))}
                 </div>
               )}
-
             </div>
           </div>
 
-         
           <div className="lg:w-5/12 flex flex-col gap-6">
-            
             <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 relative">
               <button className="absolute top-8 right-8 text-sm font-bold text-green-600 hover:underline">Edit</button>
               <div className="flex items-center gap-3 mb-4">
@@ -221,7 +227,6 @@ function Checkout() {
                 {isSubmitting ? "Processing..." : "Place Order →"}
               </button>
             </div>
-
           </div>
         </div>
       </div>

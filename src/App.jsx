@@ -7,6 +7,8 @@ import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
 import About from './pages/About';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
           <Route path="/cart" element={<Checkout />} /> 
           <Route path="/orders" element={<Orders />} /> 
           <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
       <Footer />
