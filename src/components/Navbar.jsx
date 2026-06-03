@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiSearch, FiUser, FiShoppingCart, FiLogOut, FiBox, FiClipboard, FiMail } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiLogOut, FiBox, FiClipboard, FiMail, FiUsers } from 'react-icons/fi';
 import { useCart } from '../context/CartContext'; 
 
 function Navbar() {
@@ -38,18 +38,21 @@ function Navbar() {
           
           <>
             <Link to="/admin" state={{ tab: 'orders' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
-              <FiClipboard /> Order Management
+              <FiClipboard /> Orders
             </Link>
             <Link to="/admin" state={{ tab: 'products' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
-              <FiBox /> Product Management
+              <FiBox /> Products
             </Link>
-            
             <Link to="/admin" state={{ tab: 'messages' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
               <FiMail /> Messages
             </Link>
             
+            <Link to="/admin" state={{ tab: 'users' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
+              <FiUsers /> Users
+            </Link>
+            
             <Link to="/menu" className="text-sm font-bold text-gray-400 hover:text-gray-600 ml-4 border-l pl-4 border-gray-200 transition-colors">
-              View Storefront
+              View Store
             </Link>
           </>
         ) : (

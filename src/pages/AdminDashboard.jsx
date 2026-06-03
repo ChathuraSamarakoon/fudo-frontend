@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom'; 
-import { FaSpinner, FaPlus, FaTrash, FaCheckCircle, FaEnvelopeOpenText } from 'react-icons/fa';
+import { FaSpinner, FaPlus, FaTrash, FaCheckCircle, FaEnvelopeOpenText, FaUserCircle } from 'react-icons/fa';
 import orderService from '../services/orderService';
 import productService from '../services/productService'; 
 import messageService from '../services/messageService'; 
+import userService from '../services/userService';
 
 function AdminDashboard() {
   const location = useLocation(); 
@@ -15,7 +16,6 @@ function AdminDashboard() {
     }
   }, [location.state]);
 
-  
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -23,9 +23,12 @@ function AdminDashboard() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  
   const [messages, setMessages] = useState([]);
   const [loadingMessages, setLoadingMessages] = useState(true);
+
+  
+  const [users, setUsers] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
 
   const [newProduct, setNewProduct] = useState({
     name: '', price: '', category: 'Burgers', description: '', imageUrl: '', isAvailable: true 
@@ -35,9 +38,9 @@ function AdminDashboard() {
     fetchOrders();
     fetchProducts();
     fetchMessages(); 
+    fetchUsers(); 
   }, []);
 
-  
   const fetchOrders = async () => {
     try { setLoadingOrders(true); const data = await orderService.getAllOrders(); setOrders(data.reverse()); }
     catch (error) { console.error(error); } finally { setLoadingOrders(false); }
@@ -82,35 +85,43 @@ function AdminDashboard() {
     }
   };
 
-  
   const fetchMessages = async () => {
-    try {
-      setLoadingMessages(true);
-      const data = await messageService.getAllMessages();
-      setMessages(data.reverse()); 
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
-    } finally {
-      setLoadingMessages(false);
-    }
+    try { setLoadingMessages(true); const data = await messageService.getAllMessages(); setMessages(data.reverse()); } 
+    catch (error) { console.error(error); } finally { setLoadingMessages(false); }
   };
 
   const handleMarkAsRead = async (id) => {
-    try {
-      await messageService.markAsRead(id);
-      setMessages(messages.map(msg => msg.id === id ? { ...msg, isRead: true } : msg));
-    } catch (error) {
-      console.error("Failed to mark as read:", error);
-    }
+    try { await messageService.markAsRead(id); setMessages(messages.map(msg => msg.id === id ? { ...msg, isRead: true } : msg)); } 
+    catch (error) { console.error(error); }
   };
 
   const handleDeleteMessage = async (id) => {
     if(window.confirm("Are you sure you want to delete this message?")) {
+      try { await messageService.deleteMessage(id); setMessages(messages.filter(msg => msg.id !== id)); } 
+      catch (error) { alert("Failed to delete message."); }
+    }
+  };
+
+  
+  const fetchUsers = async () => {
+    try {
+      setLoadingUsers(true);
+      const data = await userService.getAllUsers();
+      setUsers(data); 
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  const handleDeleteUser = async (id) => {
+    if(window.confirm("Are you sure you want to remove this user from the system?")) {
       try {
-        await messageService.deleteMessage(id);
-        setMessages(messages.filter(msg => msg.id !== id));
+        await userService.deleteUser(id);
+        setUsers(users.filter(u => u.id !== id));
       } catch (error) {
-        alert("Failed to delete message.");
+        alert("Failed to delete user.");
       }
     }
   };
@@ -119,23 +130,24 @@ function AdminDashboard() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-7xl mx-auto">
         
-        
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-extrabold text-gray-900">
               {activeTab === 'orders' && 'Order Management'}
               {activeTab === 'products' && 'Product Management'}
               {activeTab === 'messages' && 'Customer Messages'}
+              {activeTab === 'users' && 'User Management'}
             </h1>
             <p className="text-gray-500 mt-1">
               {activeTab === 'orders' && 'Manage your customer orders'}
               {activeTab === 'products' && 'Manage your restaurant menu items'}
               {activeTab === 'messages' && 'View and manage inquiries from customers'}
+              {activeTab === 'users' && 'Manage registered customers and admins'}
             </p>
           </div>
         </div>
 
-       
+        
         {activeTab === 'orders' && (
           <div>
             {loadingOrders ? (
@@ -187,7 +199,6 @@ function AdminDashboard() {
         
         {activeTab === 'products' && (
           <div className="flex flex-col lg:flex-row gap-8">
-             
             <div className="lg:w-1/3">
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-28">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Add New Product</h2>
@@ -272,37 +283,83 @@ function AdminDashboard() {
                     <div className="flex justify-between items-start gap-4">
                       <div className="flex-grow">
                         <div className="flex items-center gap-3 mb-1">
-                          <h4 className={`text-lg ${msg.isRead ? 'font-semibold text-gray-700' : 'font-extrabold text-gray-900'}`}>
-                            {msg.subject}
-                          </h4>
-                          {!msg.isRead && (
-                            <span className="bg-blue-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">New</span>
-                          )}
+                          <h4 className={`text-lg ${msg.isRead ? 'font-semibold text-gray-700' : 'font-extrabold text-gray-900'}`}>{msg.subject}</h4>
+                          {!msg.isRead && <span className="bg-blue-500 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full">New</span>}
                         </div>
                         <p className="text-sm font-medium text-gray-500 mb-3">From: {msg.name} ({msg.email}) • <span className="text-xs">{new Date(msg.createdAt).toLocaleString()}</span></p>
                         <p className={`text-gray-800 ${msg.isRead ? '' : 'font-medium'}`}>{msg.message_text}</p>
                       </div>
-                      
-                      {/* Action Buttons */}
                       <div className="flex flex-col gap-2 min-w-[100px]">
                         {!msg.isRead && (
-                          <button 
-                            onClick={() => handleMarkAsRead(msg.id)}
-                            className="flex items-center gap-2 text-sm text-green-600 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg font-bold transition-colors"
-                          >
+                          <button onClick={() => handleMarkAsRead(msg.id)} className="flex items-center gap-2 text-sm text-green-600 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg font-bold transition-colors">
                             <FaCheckCircle /> Mark Read
                           </button>
                         )}
-                        <button 
-                          onClick={() => handleDeleteMessage(msg.id)}
-                          className="flex justify-center items-center gap-2 text-sm text-red-500 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg font-bold transition-colors"
-                        >
+                        <button onClick={() => handleDeleteMessage(msg.id)} className="flex justify-center items-center gap-2 text-sm text-red-500 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg font-bold transition-colors">
                           <FaTrash /> Delete
                         </button>
                       </div>
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        
+        {activeTab === 'users' && (
+          <div>
+            {loadingUsers ? (
+              <div className="flex justify-center items-center py-20"><FaSpinner className="animate-spin text-4xl text-fudo-red" /></div>
+            ) : (
+              <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="bg-gray-50 border-b border-gray-100">
+                        <th className="p-5 font-bold text-gray-600">ID</th>
+                        <th className="p-5 font-bold text-gray-600">User Details</th>
+                        <th className="p-5 font-bold text-gray-600">Email</th>
+                        <th className="p-5 font-bold text-gray-600">Role</th>
+                        <th className="p-5 font-bold text-gray-600">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.length === 0 ? (
+                        <tr><td colSpan="5" className="p-10 text-center text-gray-500">No users found.</td></tr>
+                      ) : (
+                        users.map((u) => (
+                          <tr key={u.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                            <td className="p-5 font-bold text-gray-900">#{u.id}</td>
+                            <td className="p-5">
+                              <div className="flex items-center gap-3">
+                                <FaUserCircle className="text-gray-300 text-3xl" />
+                                <span className="font-bold text-gray-900">{u.name}</span>
+                              </div>
+                            </td>
+                            <td className="p-5 text-gray-600">{u.email}</td>
+                            <td className="p-5">
+                              <span className={`px-3 py-1 rounded-full text-xs font-bold ${u.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}`}>
+                                {u.role}
+                              </span>
+                            </td>
+                            <td className="p-5">
+                              <button 
+                                onClick={() => handleDeleteUser(u.id)}
+                                disabled={u.role === 'ADMIN'} 
+                                className={`p-2 rounded-lg transition-colors ${u.role === 'ADMIN' ? 'text-gray-300 cursor-not-allowed' : 'text-gray-400 hover:text-red-500 bg-gray-50'}`}
+                                title="Delete User"
+                              >
+                                <FaTrash size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
           </div>
