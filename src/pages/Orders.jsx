@@ -2,18 +2,17 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBoxOpen, FaArrowLeft, FaClock, FaCheckCircle, FaSpinner } from 'react-icons/fa';
 import orderService from '../services/orderService';
+import OrderDetailsModal from '../components/OrderDetailsModal'; 
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null); 
 
   useEffect(() => {
-    // Orders ටික Backend එකෙන් ගන්නවා
     const fetchOrders = async () => {
       try {
-        // දැනට Test User ගේ (id: 1) Orders ටික ගන්නවා
         const data = await orderService.getOrdersByUser(1); 
-        // අලුත්ම ඕඩර්ස් උඩින් එන්න රිවර්ස් කරනවා
         setOrders(data.reverse()); 
       } catch (error) {
         console.error("Failed to load orders", error);
@@ -25,7 +24,6 @@ function Orders() {
     fetchOrders();
   }, []);
 
-  // Order status එකට අදාළ පාට සහ අයිකන් එක දෙන ෆන්ක්ෂන් එකක්
   const getStatusBadge = (status) => {
     switch (status) {
       case 'PENDING':
@@ -45,7 +43,6 @@ function Orders() {
     <div className="bg-gray-50 min-h-screen py-10">
       <div className="max-w-4xl mx-auto px-6">
         
-        {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <Link to="/menu" className="text-gray-400 hover:text-fudo-red transition-colors p-3 bg-white rounded-full shadow-sm">
             <FaArrowLeft />
@@ -53,34 +50,28 @@ function Orders() {
           <h1 className="text-3xl font-extrabold text-gray-900">My Orders</h1>
         </div>
 
-        {/* Loading State */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <FaSpinner className="animate-spin text-4xl text-fudo-red mb-4" />
             <p className="text-gray-500 font-medium">Fetching your delicious orders...</p>
           </div>
         ) : orders.length === 0 ? (
-          /* Empty State */
           <div className="bg-white rounded-3xl shadow-sm p-16 text-center border border-gray-100 flex flex-col items-center">
             <FaBoxOpen className="text-6xl text-gray-300 mb-6" />
             <h2 className="text-2xl font-bold text-gray-900 mb-2">No orders yet!</h2>
-            <p className="text-gray-500 mb-8">Looks like you haven't placed any orders. Let's fix that!</p>
+            <p className="text-gray-500 mb-8">Looks like you haven't placed any orders.</p>
             <Link to="/menu" className="bg-fudo-red text-white px-8 py-3 rounded-full font-bold hover:bg-red-700 transition-colors shadow-md">
               Explore Menu
             </Link>
           </div>
         ) : (
-          /* Orders List */
           <div className="flex flex-col gap-6">
             {orders.map((order) => (
               <div key={order.id} className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-                
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-gray-100 pb-4">
                   <div>
                     <p className="text-sm text-gray-500 font-medium mb-1">Order #{order.id}</p>
-                    <p className="text-xs text-gray-400">
-                      {new Date(order.createdAt).toLocaleString()}
-                    </p>
+                    <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleString()}</p>
                   </div>
                   <div className="flex items-center gap-4">
                     <p className="font-extrabold text-lg text-gray-900">Rs. {order.totalPrice.toFixed(2)}</p>
@@ -93,7 +84,11 @@ function Orders() {
                     Payment Method: <span className="font-bold text-gray-900 uppercase">{order.paymentMethod}</span>
                   </div>
                   
-                  <button className="text-fudo-red font-bold text-sm hover:underline">
+                  
+                  <button 
+                    onClick={() => setSelectedOrder(order)} 
+                    className="text-fudo-red font-bold text-sm hover:underline"
+                  >
                     View Details
                   </button>
                 </div>
@@ -101,8 +96,15 @@ function Orders() {
             ))}
           </div>
         )}
-
       </div>
+
+      
+      {selectedOrder && (
+        <OrderDetailsModal 
+          order={selectedOrder} 
+          onClose={() => setSelectedOrder(null)} 
+        />
+      )}
     </div>
   );
 }

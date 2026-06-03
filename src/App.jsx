@@ -5,7 +5,9 @@ import Home from './pages/Home';
 import Menu from './pages/Menu';
 import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
-import Orders from './pages/Orders'; // <--- අලුත් Orders page එක Import කළා (Imported the new Orders page)
+import Orders from './pages/Orders';
+import About from './pages/About';
+
 
 function App() {
   return (
@@ -17,7 +19,8 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/cart" element={<Checkout />} /> 
-          <Route path="/orders" element={<Orders />} /> {/* <--- Orders page එකට Route එක හැදුවා (Added the route for Orders) */}
+          <Route path="/orders" element={<Orders />} /> 
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
       <Footer />
