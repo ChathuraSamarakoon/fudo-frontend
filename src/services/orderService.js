@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8080/api/orders';
 
-// Order එකක් දාන ෆන්ක්ෂන් එක
 const placeOrder = async (orderData) => {
   try {
     const response = await axios.post(API_URL, orderData);
@@ -13,7 +12,6 @@ const placeOrder = async (orderData) => {
   }
 };
 
-// User කෙනෙක්ගේ Orders ටික Backend එකෙන් ගන්න ෆන්ක්ෂන් එක (මේක තමයි කලින් මිස් වෙලා තිබ්බේ)
 const getOrdersByUser = async (userId) => {
   try {
     const response = await axios.get(`${API_URL}/user/${userId}`);
@@ -24,8 +22,32 @@ const getOrdersByUser = async (userId) => {
   }
 };
 
-// මේ ෆන්ක්ෂන් දෙකම අනිවාර්යයෙන්ම Export වෙන්න ඕනේ
+
+const getAllOrders = async () => {
+  try {
+    const response = await axios.get(API_URL);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching all orders:", error);
+    throw error;
+  }
+};
+
+
+const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    
+    const response = await axios.patch(`${API_URL}/${orderId}/status`, { status: newStatus });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating order status for ID ${orderId}:`, error);
+    throw error;
+  }
+};
+
 export default {
   placeOrder,
-  getOrdersByUser
+  getOrdersByUser,
+  getAllOrders,
+  updateOrderStatus
 };

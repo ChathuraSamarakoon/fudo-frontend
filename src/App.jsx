@@ -9,7 +9,8 @@ import Orders from './pages/Orders';
 import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
-
+import AdminDashboard from './pages/AdminDashboard';
+import ProtectedRoute from './components/ProtectedRoute'; 
 
 function App() {
   return (
@@ -25,6 +26,16 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          
+          
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </div>
       <Footer />
