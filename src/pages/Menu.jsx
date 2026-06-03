@@ -14,7 +14,7 @@ function Menu() {
   
   const { addToCart } = useCart(); 
 
-  const categories = ['All', 'Appetizers', 'Main Course', 'Desserts', 'Beverages', 'Burger'];
+  const categories = ['All', 'Appetizers', 'Main Course', 'Desserts', 'Beverages', 'Burger', 'Pizza', 'Rice', 'Kottu', 'Combos'];
 
   useEffect(() => {
     const fetchProducts = async () => {

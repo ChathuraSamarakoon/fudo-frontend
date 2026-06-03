@@ -216,6 +216,8 @@ function AdminDashboard() {
                     <select value={newProduct.category} onChange={(e) => setNewProduct({...newProduct, category: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:border-fudo-red">
                       <option value="Burgers">Burgers</option>
                       <option value="Pizza">Pizza</option>
+                      <option value="Rice">Rice</option>
+                      <option value="Kottu">Kottu</option>
                       <option value="Beverages">Beverages</option>
                       <option value="Desserts">Desserts</option>
                       <option value="Combos">Combos</option>
