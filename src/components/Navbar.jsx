@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiSearch, FiUser, FiShoppingCart, FiLogOut, FiBox, FiClipboard } from 'react-icons/fi';
+import { FiSearch, FiUser, FiShoppingCart, FiLogOut, FiBox, FiClipboard, FiMail } from 'react-icons/fi';
 import { useCart } from '../context/CartContext'; 
 
 function Navbar() {
@@ -24,7 +24,6 @@ function Navbar() {
     window.location.reload(); 
   };
 
-  
   const isAdmin = user?.role === 'ADMIN';
 
   return (
@@ -34,7 +33,6 @@ function Navbar() {
         Fudo {isAdmin && <span className="text-sm text-gray-400 font-medium ml-1">Admin</span>}
       </Link>
 
-      
       <div className="hidden md:flex gap-8 font-semibold text-gray-600 items-center">
         {isAdmin ? (
           
@@ -44,6 +42,10 @@ function Navbar() {
             </Link>
             <Link to="/admin" state={{ tab: 'products' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
               <FiBox /> Product Management
+            </Link>
+            
+            <Link to="/admin" state={{ tab: 'messages' }} className="hover:text-fudo-red transition-colors flex items-center gap-2">
+              <FiMail /> Messages
             </Link>
             
             <Link to="/menu" className="text-sm font-bold text-gray-400 hover:text-gray-600 ml-4 border-l pl-4 border-gray-200 transition-colors">
@@ -61,9 +63,7 @@ function Navbar() {
         )}
       </div>
 
-      
       <div className="flex items-center gap-6">
-        
         
         {!isAdmin && (
           <button className="text-gray-600 hover:text-fudo-red transition-colors">
