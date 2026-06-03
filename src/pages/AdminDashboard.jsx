@@ -1,28 +1,34 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom'; 
 import { FaSpinner, FaPlus, FaTrash } from 'react-icons/fa';
 import orderService from '../services/orderService';
 import productService from '../services/productService'; 
 
 function AdminDashboard() {
+  const location = useLocation(); 
   
-  const [activeTab, setActiveTab] = useState('orders'); 
+  const [activeTab, setActiveTab] = useState(location.state?.tab || 'orders'); 
 
-  
+  useEffect(() => {
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
+
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
- 
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
   
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: '',
     category: 'Burgers',
     description: '',
-    imageUrl: ''
+    imageUrl: '',
+    isAvailable: true 
   });
 
   useEffect(() => {
@@ -30,7 +36,6 @@ function AdminDashboard() {
     fetchProducts();
   }, []);
 
-  // ---------------- ORDERS FUNCTIONS ----------------
   const fetchOrders = async () => {
     try {
       setLoadingOrders(true);
@@ -65,7 +70,6 @@ function AdminDashboard() {
     }
   };
 
-  
   const fetchProducts = async () => {
     try {
       setLoadingProducts(true);
@@ -88,8 +92,7 @@ function AdminDashboard() {
       const addedProduct = await productService.addProduct(productToSave);
       setProducts([addedProduct, ...products]); 
       
-      
-      setNewProduct({ name: '', price: '', category: 'Burgers', description: '', imageUrl: '' });
+      setNewProduct({ name: '', price: '', category: 'Burgers', description: '', imageUrl: '', isAvailable: true });
       alert("Product added successfully! 🎉");
     } catch (error) {
       console.error("Failed to add product:", error);
@@ -116,28 +119,16 @@ function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-gray-900">Admin Dashboard</h1>
-            <p className="text-gray-500 mt-1">Manage your restaurant operations</p>
+            <h1 className="text-3xl font-extrabold text-gray-900">
+              {activeTab === 'orders' ? 'Order Management' : 'Product Management'}
+            </h1>
+            <p className="text-gray-500 mt-1">
+              {activeTab === 'orders' ? 'Manage your customer orders' : 'Manage your restaurant menu items'}
+            </p>
           </div>
           
-          
-          <div className="flex bg-white p-1 rounded-xl shadow-sm border border-gray-200">
-            <button 
-              onClick={() => setActiveTab('orders')}
-              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-colors ${activeTab === 'orders' ? 'bg-fudo-red text-white' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              Orders Management
-            </button>
-            <button 
-              onClick={() => setActiveTab('products')}
-              className={`px-6 py-2.5 rounded-lg font-bold text-sm transition-colors ${activeTab === 'products' ? 'bg-fudo-red text-white' : 'text-gray-600 hover:bg-gray-50'}`}
-            >
-              Products Management
-            </button>
-          </div>
         </div>
 
-        
         {activeTab === 'orders' && (
           <div>
             {loadingOrders ? (
@@ -200,11 +191,9 @@ function AdminDashboard() {
           </div>
         )}
 
-        
         {activeTab === 'products' && (
           <div className="flex flex-col lg:flex-row gap-8">
             
-           
             <div className="lg:w-1/3">
               <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 sticky top-28">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Add New Product</h2>
@@ -252,7 +241,6 @@ function AdminDashboard() {
               </div>
             </div>
 
-            
             <div className="lg:w-2/3">
               <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Menu Items ({products.length})</h2>
