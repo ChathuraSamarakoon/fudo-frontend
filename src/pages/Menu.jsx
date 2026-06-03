@@ -9,7 +9,6 @@ function Menu() {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
   
-  
   const [addedId, setAddedId] = useState(null); 
   
   const { addToCart } = useCart(); 
@@ -37,16 +36,17 @@ function Menu() {
     fetchProducts();
   }, [activeCategory]); 
 
-  
   const handleAddToCart = (product) => {
     addToCart(product);     
     setAddedId(product.id);  
-    
     
     setTimeout(() => {
       setAddedId(null);
     }, 1000);
   };
+
+
+  const availableProducts = products.filter(product => product.isAvailable !== false);
 
   return (
     <div className="max-w-7xl mx-auto px-10 py-16">
@@ -85,13 +85,14 @@ function Menu() {
         <div className="text-center text-xl font-bold text-gray-500 py-20 animate-pulse">
           Loading delicious food... 🍕
         </div>
-      ) : products.length === 0 ? (
+      ) : availableProducts.length === 0 ? (  
         <div className="text-center text-gray-500 py-20 font-medium">
           No items found in this category.
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
+        
+          {availableProducts.map((product) => (
             <div key={product.id} className="bg-white rounded-3xl shadow-sm hover:shadow-xl transition-shadow border border-gray-100 overflow-hidden flex flex-col relative group">
               <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm z-10">
                 {product.category}
@@ -100,6 +101,8 @@ function Menu() {
                 <img 
                   src={product.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop"} 
                   alt={product.name} 
+                  
+                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop"; }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               </div>
@@ -119,10 +122,8 @@ function Menu() {
                     <span className="text-gray-700 ml-1">4.8 (120)</span>
                   </div>
                   
-                  
                   <button 
                     onClick={() => handleAddToCart(product)} 
-                    
                     className={`px-5 py-2.5 rounded-full font-bold transition-all duration-300 shadow-md flex items-center gap-2 active:scale-95 ${
                       addedId === product.id 
                         ? 'bg-green-500 text-white hover:bg-green-600' 
