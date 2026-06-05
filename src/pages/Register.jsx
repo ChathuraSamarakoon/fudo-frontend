@@ -17,7 +17,7 @@ function Register() {
 
     try {
       
-      await axios.post('http://localhost:8080/api/users/register', {
+      await axios.post('http://fudo-backend-env.eba-6pzh9mzc.ap-southeast-1.elasticbeanstalk.com/api/users/register', {
         name,
         email,
         password,

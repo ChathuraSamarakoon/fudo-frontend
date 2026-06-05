@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/orders';
+const API_URL = 'http://fudo-backend-env.eba-6pzh9mzc.ap-southeast-1.elasticbeanstalk.com/api/orders';
 
 const placeOrder = async (orderData) => {
   try {

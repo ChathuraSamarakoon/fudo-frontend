@@ -15,7 +15,7 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8080/api/users/login', {
+      const response = await axios.post('http://fudo-backend-env.eba-6pzh9mzc.ap-southeast-1.elasticbeanstalk.com/api/users/login', {
         email,
         password
       });
