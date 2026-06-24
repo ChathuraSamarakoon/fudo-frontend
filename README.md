@@ -91,7 +91,7 @@ fudo-frontend/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/fudo-frontend.git
+git clone https://github.com/ChathuraSamarakoon/fudo-frontend.git
 cd fudo-frontend
 ```
 
